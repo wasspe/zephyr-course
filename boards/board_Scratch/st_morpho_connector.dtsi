@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2023 Marcin Niestroj
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/gpio/st-morpho-header.h>
+
+/ {
+	st_morpho_header: st-morpho-header {
+		compatible = "st-morpho-header";
+		#gpio-cells = <2>;
+		gpio-map-mask = <ST_MORPHO_PIN_MASK 0x0>;
+		gpio-map-pass-thru = <0x0 GPIO_DT_FLAGS_MASK>;
+		gpio-map =
+			   <ST_MORPHO_R_11 0 &gpioa 5 0>;
+	};
+};
