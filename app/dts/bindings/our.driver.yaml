@@ -1,0 +1,7 @@
+description: "Simple LED-backed sensor"
+compatible: "our,driver"
+
+properties:
+  led:
+    type: phandle
+    required: true
