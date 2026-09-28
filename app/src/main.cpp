@@ -2,6 +2,7 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/drivers/sensor.h>
+#include "our_driver.h"
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED_NODE DT_ALIAS(app_led)
@@ -20,6 +21,18 @@ namespace {
 
         ret = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &val);   /* LED off */
         LOG_INF("Channel ret %d", ret);
+
+        /* our extension API: turn on inverted mode */
+        our_driver_set_inverted(driver, true);
+
+        ret = sensor_sample_fetch(driver);   /* LED off now */
+        LOG_INF("Fetch ret %d", ret);
+        k_msleep(500);
+
+        ret = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &val);   /* LED on now */
+        LOG_INF("Channel ret %d", ret);
+
+        our_driver_set_inverted(driver, false);
     }
 }
 
