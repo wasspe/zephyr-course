@@ -1,42 +1,43 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/shell/shell.h>
-#include <zephyr/drivers/sensor.h>
+#include <stdlib.h>
 
-/* get our sensor from the devicetree*/
-static const struct device *sensor_dev = DEVICE_DT_GET(DT_NODELABEL(our_driver0));
-
-/* sensorroot fetch -> calls sensor_sample_fetch() */
-static int cmd_fetch(const struct shell *sh, size_t argc, char **argv)
+/* handler for: sensor set <0|1> */
+static int cmd_set(const struct shell *sh, size_t argc, char **argv)
 {
+    char *end;
+    long value;
 
-    shell_print(sh, "fetch ok");
+    /* argc is 1 when the user only typed "sensor set" */
+    if (argc < 2) {
+        shell_error(sh, "Missing argument. Usage: sensor set <0|1>");
+        return -EINVAL;
+    }
+
+    /* convert the text to a number and check that it was really a number */
+    value = strtol(argv[1], &end, 10);
+    if (end == argv[1] || *end != '\0') {
+        shell_error(sh, "'%s' is not a number. Usage: sensor set <0|1>", argv[1]);
+        return -EINVAL;
+    }
+
+    /* inverted is a bool so only 0 and 1 make sense */
+    if (value < 0 || value > 1) {
+        shell_error(sh, "Value %ld is out of range, use 0 or 1", value);
+        return -EINVAL;
+    }
+
+    shell_print(sh, "Inverted mode is now %s", value == 1 ? "on" : "off");
     return 0;
 }
 
-/* sensorroot read -> calls sensor_channel_get() and prints the value */
-static int cmd_read(const struct shell *sh, size_t argc, char **argv)
-{
-    struct sensor_value val = {0, 0};
-
-    /* val1 is the whole part, val2 is the part after the dot (in millionths) */
-    shell_print(sh, "value: %d.%06d", val.val1, val.val2);
-    return 0;
-}
-
-/* sensorroot info -> prints device name and if it is ready */
-static int cmd_info(const struct shell *sh, size_t argc, char **argv)
-{
-    shell_print(sh, "name:  %s", sensor_dev->name);
-    shell_print(sh, "ready: %s", device_is_ready(sensor_dev) ? "yes" : "no");
-    return 0;
-}
-
-SHELL_STATIC_SUBCMD_SET_CREATE(sensorroot_cmds,
-    SHELL_CMD(fetch, NULL, "Fetch a new sample from the sensor", cmd_fetch),
-    SHELL_CMD(read, NULL, "Read the channel and print the value", cmd_read),
-    SHELL_CMD(info, NULL, "Show device name and ready state", cmd_info),
+/* 1 mandatory arg (the command name "set") and 1 optional arg (the value).
+ * More than one value is rejected by the shell itself, a missing value
+ * is handled in cmd_set so we can print our own error message. */
+SHELL_STATIC_SUBCMD_SET_CREATE(sensor_cmds,
+    SHELL_CMD_ARG(set, NULL, "Set inverted mode: sensor set <0|1>", cmd_set, 1, 1),
     SHELL_SUBCMD_SET_END
 );
 
-SHELL_CMD_REGISTER(sensorroot, &sensorroot_cmds, "Sensor driver commands", NULL);
+SHELL_CMD_REGISTER(sensor, &sensor_cmds, "Sensor commands", NULL);
