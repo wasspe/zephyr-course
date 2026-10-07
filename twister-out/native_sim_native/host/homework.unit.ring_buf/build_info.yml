@@ -1,0 +1,46 @@
+cmake:
+  application:
+    configuration-dir: '/home/med_wassim_ben_ayed/zephyr-course/tests/ring_buf'
+    source-dir: '/home/med_wassim_ben_ayed/zephyr-course/tests/ring_buf'
+  board:
+    name: 'native_sim'
+    path:
+     - '/home/med_wassim_ben_ayed/deps/zephyr/boards/native/native_sim'
+    qualifiers: 'native'
+    revision: ''
+  devicetree:
+    bindings-dirs:
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/bindings'
+    files:
+     - '/home/med_wassim_ben_ayed/deps/zephyr/boards/native/native_sim/native_sim.dts'
+    include-dirs:
+     - '/home/med_wassim_ben_ayed/deps/modules/hal/nxp/dts'
+     - '/home/med_wassim_ben_ayed/deps/modules/hal/stm32/dts'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/include'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/include/zephyr'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/common'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/vendor'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/rx'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/x86'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/xtensa'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/sparc'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/riscv'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/posix'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/arm64'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/arm'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts/arc'
+     - '/home/med_wassim_ben_ayed/deps/zephyr/dts'
+  kconfig:
+    files:
+     - '/home/med_wassim_ben_ayed/deps/zephyr/boards/native/native_sim/native_sim_defconfig'
+     - '/home/med_wassim_ben_ayed/zephyr-course/tests/ring_buf/prj.conf'
+     - '/home/med_wassim_ben_ayed/zephyr-course/twister-out/native_sim_native/host/homework.unit.ring_buf/zephyr/misc/generated/extra_kconfig_options.conf'
+    user-files:
+     - '/home/med_wassim_ben_ayed/zephyr-course/tests/ring_buf/prj.conf'
+  toolchain:
+    name: 'host'
+    path: ''
+  zephyr:
+    version: '4.2.0'
+    zephyr-base: '/home/med_wassim_ben_ayed/deps/zephyr'
+version: '0.1.0'
