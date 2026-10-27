@@ -14,9 +14,16 @@ if LED_SUBSYSTEM
             bool "1s (medium)"
 
         config BLINK_SLEEP_2000MS
-            bool "2000s (slow)"
+            bool "2000ms (slow)"
 
     endchoice
+
+    config BLINK_SLEEP_MS
+        int
+        default 250 if BLINK_SLEEP_250MS
+        default 1000 if BLINK_SLEEP_1000MS
+        default 2000 if BLINK_SLEEP_2000MS
+
     menuconfig ADVANCED_LED_SETTING
         bool "Advanced LED settings"
         default n
@@ -52,4 +59,4 @@ if LED_SUBSYSTEM
 
 endif # LED_SUBSYSTEM
 
-source "kconfig.zephyr"
+source "Kconfig.zephyr"
