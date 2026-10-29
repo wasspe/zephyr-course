@@ -3,11 +3,16 @@
 #include <zephyr/shell/shell.h>
 #include <stdlib.h>
 
+#include "our_driver.h"
+
+#define OUR_DEV DEVICE_DT_GET_ONE(our_driver)
+
 /* handler for: sensor set <0|1> */
-static int cmd_set(const struct shell *sh, size_t argc, char **argv)
-{
+static int cmd_set(const struct shell *sh, size_t argc, char **argv){
+    const struct device *dev = OUR_DEV;
     char *end;
     long value;
+    int ret;
 
     /* argc is 1 when the user only typed "sensor set" */
     if (argc < 2) {
@@ -26,6 +31,18 @@ static int cmd_set(const struct shell *sh, size_t argc, char **argv)
     if (value < 0 || value > 1) {
         shell_error(sh, "Value %ld is out of range, use 0 or 1", value);
         return -EINVAL;
+    }
+
+    if (!device_is_ready(dev)) {
+        shell_error(sh, "Device %s is not ready", dev->name);
+        return -ENODEV;
+    }
+
+    /* call the extension API with the parsed value */
+    ret = our_driver_set_inverted(dev, value == 1);
+    if (ret < 0) {
+        shell_error(sh, "Failed to set inverted mode (%d)", ret);
+        return ret;
     }
 
     shell_print(sh, "Inverted mode is now %s", value == 1 ? "on" : "off");
