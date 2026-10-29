@@ -10,6 +10,13 @@ static const struct device *sensor_dev = DEVICE_DT_GET(DT_NODELABEL(our_driver0)
 static int cmd_fetch(const struct shell *sh, size_t argc, char **argv)
 {
 
+    int ret = sensor_sample_fetch(sensor_dev);
+
+    if (ret < 0) {
+        shell_error(sh, "fetch failed (%d)", ret);
+        return ret;
+    }
+
     shell_print(sh, "fetch ok");
     return 0;
 }
@@ -18,6 +25,13 @@ static int cmd_fetch(const struct shell *sh, size_t argc, char **argv)
 static int cmd_read(const struct shell *sh, size_t argc, char **argv)
 {
     struct sensor_value val = {0, 0};
+
+    int ret = sensor_channel_get(sensor_dev, SENSOR_CHAN_ALL, &val);
+
+    if (ret < 0) {
+        shell_error(sh, "read failed (%d)", ret);
+        return ret;
+    }
 
     /* val1 is the whole part, val2 is the part after the dot (in millionths) */
     shell_print(sh, "value: %d.%06d", val.val1, val.val2);
